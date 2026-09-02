@@ -5,11 +5,11 @@ import { intervalToDuration } from "date-fns";
 
 import { plural, units } from "@/lib/utils/plural";
 
-/** Каждой плитке свой цвет: сиреневый, розовый, кремовый. */
+/** Каждой плитке свой цвет: роза, карамель, тёплое золото. */
 const TILES = [
   { forms: units.year, color: "text-accent" },
   { forms: units.month, color: "text-accent-2" },
-  { forms: units.day, color: "text-[#f0d9a8]" },
+  { forms: units.day, color: "text-accent-3" },
 ] as const;
 
 const pad = (n: number) => String(n).padStart(2, "0");

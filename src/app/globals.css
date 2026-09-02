@@ -1,69 +1,88 @@
 @import "tailwindcss";
 
 /*
-  Дизайн-система приложения.
-  Все цвета заданы переменными, поэтому светлая и тёмная темы отличаются
-  только значениями, а не отдельными наборами классов.
+  Палитра: тёплый беж.
+
+  Основа — не белый и не чёрный, а песочная бумага и какао. Акценты —
+  припудренная роза и карамель: они близки друг к другу по теплу, поэтому
+  переливы между ними получаются мягкими, без цветового шва.
 */
 
 :root {
   color-scheme: light;
 
   /* Фон страницы и «бумага» карточек */
-  --bg: #faf7fd;
-  --surface: #ffffff;
-  --surface-2: #f3edfa;
+  --bg: #faf5ee;
+  --surface: #fffdf9;
+  --surface-2: #f3eade;
 
-  /* Текст */
-  --text: #1d1726;
-  --text-muted: #6b6180;
-  --text-faint: #a196b5;
+  /* Текст: тёплый коричневый вместо серого — на беже серый выглядит грязным */
+  --text: #2e2620;
+  --text-muted: #7a6a5c;
+  --text-faint: #ab9a8a;
 
   /* Линии и разделители */
-  --border: #e8e0f2;
-  --border-strong: #d6cce6;
+  --border: #ebe0d1;
+  --border-strong: #dccdb8;
 
-  /* Два акцента: сиреневый ведущий и розовый в пару к нему.
-     Второй нужен для переливов — одним цветом градиент не сделать. */
-  --accent: #8b5cc7;
-  --accent-2: #d9709f;
-  --accent-hover: #7a4bb5;
-  --accent-soft: #f3e9fb;
-  --on-accent: #ffffff;
+  /* Три акцента: роза ведущая, карамель в пару к ней для переливов,
+     тёплое золото — третий голос для мелочей вроде плиток счётчика. */
+  --accent: #a45f58;
+  --accent-2: #c98d5f;
+  --accent-3: #a8763f;
+  --accent-hover: #8f5049;
+  --accent-soft: #f6eae4;
+  --on-accent: #fffaf6;
 
   /* Служебные */
-  --danger: #c4426a;
-  --success: #4a8a6a;
+  --danger: #b4544f;
+  --success: #6f8c5f;
 
-  --shadow-card: 0 1px 2px rgb(25 23 20 / 0.04), 0 4px 16px rgb(25 23 20 / 0.04);
-  --shadow-sheet: 0 -8px 40px rgb(25 23 20 / 0.16);
+  /* Свечения фона: пудра, шампань, песок */
+  --glow-1: 232 200 186;
+  --glow-2: 226 178 160;
+  --glow-3: 214 190 158;
+  --glow-a: 0.5;
+  --glow-b: 0.42;
+  --glow-c: 0.34;
+
+  --shadow-card: 0 1px 2px rgb(60 44 32 / 0.05), 0 4px 16px rgb(60 44 32 / 0.05);
+  --shadow-sheet: 0 -8px 40px rgb(60 44 32 / 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
 
-    /* Фиолетовая основа. Заметно светлее прежней почти-чёрной: на ней
-       и свечения, и карточки читаются как цвет, а не как серость. */
-    --bg: #150f20;
-    --surface: #211a30;
-    --surface-2: #2c2440;
+    /* Тёмная тема остаётся тёплой: не чёрный, а густое какао.
+       На нём беж и роза читаются как цвет, а не как серость. */
+    --bg: #1b1512;
+    --surface: #262019;
+    --surface-2: #322920;
 
-    --text: #f3eefa;
-    --text-muted: #ab9fc4;
-    --text-faint: #786c92;
+    --text: #f5ece1;
+    --text-muted: #bfae9c;
+    --text-faint: #8b7a68;
 
-    --border: #362c4c;
-    --border-strong: #483c62;
+    --border: #3b3127;
+    --border-strong: #4e4133;
 
-    --accent: #bd8bee;
-    --accent-2: #f4a3ca;
-    --accent-hover: #cb9df5;
-    --accent-soft: #2f2447;
-    --on-accent: #1c1128;
+    --accent: #e0a094;
+    --accent-2: #edc79a;
+    --accent-3: #e6c091;
+    --accent-hover: #ecb3a7;
+    --accent-soft: #372a24;
+    --on-accent: #2a1a16;
 
-    --danger: #f08ab0;
-    --success: #86d6ae;
+    --danger: #e79a90;
+    --success: #a8c48c;
+
+    --glow-1: 196 132 116;
+    --glow-2: 176 122 96;
+    --glow-3: 150 118 84;
+    --glow-a: 0.34;
+    --glow-b: 0.28;
+    --glow-c: 0.22;
 
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.24);
     --shadow-sheet: 0 -8px 40px rgb(0 0 0 / 0.5);
@@ -76,42 +95,56 @@
 */
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #faf7fd;
-  --surface: #ffffff;
-  --surface-2: #f3edfa;
-  --text: #1d1726;
-  --text-muted: #6b6180;
-  --text-faint: #a196b5;
-  --border: #e8e0f2;
-  --border-strong: #d6cce6;
-  --accent: #8b5cc7;
-  --accent-2: #d9709f;
-  --accent-hover: #7a4bb5;
-  --accent-soft: #f3e9fb;
-  --on-accent: #ffffff;
-  --danger: #c4426a;
-  --success: #4a8a6a;
-  --shadow-card: 0 1px 2px rgb(25 23 20 / 0.04), 0 4px 16px rgb(25 23 20 / 0.04);
-  --shadow-sheet: 0 -8px 40px rgb(25 23 20 / 0.16);
+  --bg: #faf5ee;
+  --surface: #fffdf9;
+  --surface-2: #f3eade;
+  --text: #2e2620;
+  --text-muted: #7a6a5c;
+  --text-faint: #ab9a8a;
+  --border: #ebe0d1;
+  --border-strong: #dccdb8;
+  --accent: #a45f58;
+  --accent-2: #c98d5f;
+  --accent-3: #a8763f;
+  --accent-hover: #8f5049;
+  --accent-soft: #f6eae4;
+  --on-accent: #fffaf6;
+  --danger: #b4544f;
+  --success: #6f8c5f;
+  --glow-1: 232 200 186;
+  --glow-2: 226 178 160;
+  --glow-3: 214 190 158;
+  --glow-a: 0.5;
+  --glow-b: 0.42;
+  --glow-c: 0.34;
+  --shadow-card: 0 1px 2px rgb(60 44 32 / 0.05), 0 4px 16px rgb(60 44 32 / 0.05);
+  --shadow-sheet: 0 -8px 40px rgb(60 44 32 / 0.16);
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #150f20;
-  --surface: #211a30;
-  --surface-2: #2c2440;
-  --text: #f3eefa;
-  --text-muted: #ab9fc4;
-  --text-faint: #786c92;
-  --border: #362c4c;
-  --border-strong: #483c62;
-  --accent: #bd8bee;
-  --accent-2: #f4a3ca;
-  --accent-hover: #cb9df5;
-  --accent-soft: #2f2447;
-  --on-accent: #1c1128;
-  --danger: #f08ab0;
-  --success: #86d6ae;
+  --bg: #1b1512;
+  --surface: #262019;
+  --surface-2: #322920;
+  --text: #f5ece1;
+  --text-muted: #bfae9c;
+  --text-faint: #8b7a68;
+  --border: #3b3127;
+  --border-strong: #4e4133;
+  --accent: #e0a094;
+  --accent-2: #edc79a;
+  --accent-3: #e6c091;
+  --accent-hover: #ecb3a7;
+  --accent-soft: #372a24;
+  --on-accent: #2a1a16;
+  --danger: #e79a90;
+  --success: #a8c48c;
+  --glow-1: 196 132 116;
+  --glow-2: 176 122 96;
+  --glow-3: 150 118 84;
+  --glow-a: 0.34;
+  --glow-b: 0.28;
+  --glow-c: 0.22;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.24);
   --shadow-sheet: 0 -8px 40px rgb(0 0 0 / 0.5);
 }
@@ -127,6 +160,7 @@
   --color-border-strong: var(--border-strong);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);

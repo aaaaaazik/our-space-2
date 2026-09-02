@@ -178,11 +178,11 @@ export default async function HomePage() {
     // без него последние плитки уезжали бы под него.
     <div className="px-5 pt-[max(2rem,env(safe-area-inset-top))] pb-16">
       <div className="flex flex-col items-center">
-        {/* Звезда со стороны A, луна со стороны H */}
+        {/* По бабочке с каждой стороны от аватарок */}
         <div className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/stickers/star.svg"
+            src="/stickers/butterfly.svg"
             alt=""
             aria-hidden
             width={22}
@@ -195,7 +195,7 @@ export default async function HomePage() {
 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/stickers/moon.svg"
+            src="/stickers/butterfly-cream.svg"
             alt=""
             aria-hidden
             width={22}

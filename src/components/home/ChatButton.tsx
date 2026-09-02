@@ -26,7 +26,7 @@ export function ChatButton({ unread }: { unread: number }) {
         // не меняет, а кружок пришлось бы растягивать.
         <span
           aria-hidden
-          className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-bg bg-accent-2 px-1 text-[10px] leading-none font-semibold text-[#2b1220]"
+          className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-bg bg-accent-2 px-1 text-[10px] leading-none font-semibold text-on-accent"
         >
           {unread > 9 ? "9+" : unread}
         </span>

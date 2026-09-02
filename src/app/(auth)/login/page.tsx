@@ -21,7 +21,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
           <div className="flex items-center justify-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/stickers/star.svg"
+              src="/stickers/butterfly.svg"
               alt=""
               aria-hidden
               width={24}
@@ -36,7 +36,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/stickers/moon.svg"
+              src="/stickers/butterfly-cream.svg"
               alt=""
               aria-hidden
               width={24}

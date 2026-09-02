@@ -72,7 +72,7 @@ export function LetterView({
         <div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain">
           {/* Волна 1: темнота накрывает список */}
           <motion.div
-            className="fixed inset-0 bg-[#0d0a11]"
+            className="fixed inset-0 bg-[#171210]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

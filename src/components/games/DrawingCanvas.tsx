@@ -89,10 +89,10 @@ export function DrawingCanvas({
         <canvas ref={previewRef} className="size-full" />
 
         {empty && (
-          <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#7c6f92]">
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#8b7a68]">
             <Pencil size={26} aria-hidden />
             <span className="text-[15px]">Нажмите, чтобы рисовать</span>
-            <span className="text-[13px] text-[#a396bb]">
+            <span className="text-[13px] text-[#ab9a8a]">
               откроется на весь экран
             </span>
           </span>

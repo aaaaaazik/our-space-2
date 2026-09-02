@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 30" width="32" height="30">
+  <!-- Та же бабочка в кремовых тонах: для дальнего плана, тише основной -->
+  <g stroke="#a67a63" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M16 15C10 3 2 4 3 11c1 5 8 6 13 4z" fill="#f0dcc0"/>
+    <path d="M16 15C22 3 30 4 29 11c-1 5-8 6-13 4z" fill="#f0dcc0"/>
+    <path d="M16 15c-5 2-11 5-9 10 2 4 8-3 9-10z" fill="#e6c8b4"/>
+    <path d="M16 15c5 2 11 5 9 10-2 4-8-3-9-10z" fill="#e6c8b4"/>
+  </g>
+  <g stroke="#a67a63" stroke-width="1.6" stroke-linecap="round" fill="none">
+    <path d="M16 8v15"/>
+    <path d="M16 8.5C15 5.5 13.5 4.2 11.8 3.6" stroke-width="1.2"/>
+    <path d="M16 8.5c1-3 2.5-4.3 4.2-4.9" stroke-width="1.2"/>
+  </g>
+</svg>

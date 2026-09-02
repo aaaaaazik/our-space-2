@@ -52,18 +52,23 @@ export type Sticker = {
 };
 
 export const STICKERS: Sticker[] = [
-  // Сердечки — самые мелкие и частые, они держат общее настроение
-  { src: "/stickers/heart.svg", top: "14%", right: "8%", size: 22, rotate: 14, opacity: 0.5, delay: 0 },
-  { src: "/stickers/heart.svg", top: "31%", left: "6%", size: 16, rotate: -18, opacity: 0.4, delay: 2.1 },
-  { src: "/stickers/heart.svg", top: "47%", right: "11%", size: 19, rotate: 8, opacity: 0.45, delay: 4.3 },
-  { src: "/stickers/heart.svg", top: "63%", left: "9%", size: 14, rotate: -8, opacity: 0.36, delay: 1.2 },
-  { src: "/stickers/heart.svg", top: "79%", right: "7%", size: 20, rotate: 16, opacity: 0.42, delay: 3.4 },
-  { src: "/stickers/heart.svg", top: "90%", left: "14%", size: 15, rotate: -12, opacity: 0.34, delay: 5.6 },
+  // Сердечки — основа настроения. Три вида вместо одного: залитое,
+  // пустое и кремовое. Одинаковые сердечки в ряд читаются как узор
+  // на обоях; разные — как будто их набросали от руки.
+  { src: "/stickers/heart.svg", top: "13%", right: "8%", size: 22, rotate: 14, opacity: 0.5, delay: 0 },
+  { src: "/stickers/heart-outline.svg", top: "29%", left: "6%", size: 17, rotate: -18, opacity: 0.42, delay: 2.1 },
+  { src: "/stickers/heart-cream.svg", top: "45%", right: "12%", size: 19, rotate: 8, opacity: 0.5, delay: 4.3 },
+  { src: "/stickers/heart.svg", top: "61%", left: "9%", size: 14, rotate: -8, opacity: 0.38, delay: 1.2 },
+  { src: "/stickers/heart-outline.svg", top: "76%", right: "7%", size: 20, rotate: 16, opacity: 0.4, delay: 3.4 },
+  { src: "/stickers/heart-cream.svg", top: "89%", left: "13%", size: 15, rotate: -12, opacity: 0.42, delay: 5.6 },
+  { src: "/stickers/heart.svg", top: "36%", left: "16%", size: 11, rotate: 20, opacity: 0.3, delay: 6.4 },
+  { src: "/stickers/heart-cream.svg", top: "68%", right: "16%", size: 12, rotate: -20, opacity: 0.34, delay: 0.8 },
 
-  { src: "/stickers/star.svg", top: "22%", left: "12%", size: 18, rotate: -6, opacity: 0.4, delay: 1.7 },
-  { src: "/stickers/star.svg", top: "57%", right: "13%", size: 14, rotate: 12, opacity: 0.32, delay: 4.9 },
-  { src: "/stickers/moon.svg", top: "70%", right: "9%", size: 20, rotate: 10, opacity: 0.38, delay: 3.9 },
-  { src: "/stickers/moon.svg", top: "39%", left: "8%", size: 15, rotate: -14, opacity: 0.3, delay: 6.1 },
+  // Бабочки — крупнее сердечек и потому реже: три штуки на экран,
+  // разнесённые по высоте, чтобы взгляд не собирал их в кучу.
+  { src: "/stickers/butterfly.svg", top: "21%", left: "11%", size: 26, rotate: -10, opacity: 0.46, delay: 1.7 },
+  { src: "/stickers/butterfly-cream.svg", top: "54%", right: "9%", size: 22, rotate: 12, opacity: 0.4, delay: 4.9 },
+  { src: "/stickers/butterfly.svg", top: "83%", left: "7%", size: 20, rotate: 8, opacity: 0.36, delay: 3.9 },
 ];
 
 /** Видео нужно вставлять другим тегом, чем картинку. */

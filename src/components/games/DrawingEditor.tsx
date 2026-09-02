@@ -254,7 +254,7 @@ export function DrawingEditor({
 
     // Фон вокруг листа — чтобы было видно, где кончается бумага.
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillStyle = "#0b0810";
+    ctx.fillStyle = "#171210";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.setTransform(
@@ -289,14 +289,14 @@ export function DrawingEditor({
       const px = 1 / view.scale;
 
       ctx.save();
-      ctx.strokeStyle = "#7c3aed";
+      ctx.strokeStyle = "#a45f58";
       ctx.lineWidth = 2 * px;
       ctx.setLineDash([8 * px, 6 * px]);
       ctx.strokeRect(box.x, box.y, box.w, box.h);
 
       const handle = handleAt(item);
       ctx.setLineDash([]);
-      ctx.fillStyle = "#7c3aed";
+      ctx.fillStyle = "#a45f58";
       ctx.beginPath();
       ctx.arc(handle.x, handle.y, 9 * px, 0, Math.PI * 2);
       ctx.fill();
@@ -721,7 +721,7 @@ export function DrawingEditor({
   const brushing = mode !== "stamp" && mode !== "text";
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#0b0810]">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#171210]">
       <header className="flex shrink-0 items-center justify-between gap-2 px-3 pt-[max(0.6rem,env(safe-area-inset-top))] pb-2">
         <button
           type="button"
@@ -755,7 +755,7 @@ export function DrawingEditor({
           <button
             type="button"
             onClick={onClose}
-            className="flex min-h-9 items-center gap-1.5 rounded-full bg-white px-4 text-[14px] font-semibold text-[#0b0810]"
+            className="flex min-h-9 items-center gap-1.5 rounded-full bg-white px-4 text-[14px] font-semibold text-[#171210]"
           >
             <Check size={15} aria-hidden />
             Готово
@@ -953,7 +953,7 @@ export function DrawingEditor({
             <button
               type="button"
               onClick={() => select(null)}
-              className="min-h-9 shrink-0 rounded-xl bg-white px-3 text-[13px] font-semibold text-[#0b0810]"
+              className="min-h-9 shrink-0 rounded-xl bg-white px-3 text-[13px] font-semibold text-[#171210]"
             >
               Готово
             </button>
@@ -1061,7 +1061,7 @@ export function DrawingEditor({
           телефоне под клавиатурой холста всё равно не видно. */}
       {typing && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/70 px-6">
-          <div className="w-full max-w-sm rounded-3xl border border-white/12 bg-[#141020] p-4">
+          <div className="w-full max-w-sm rounded-3xl border border-white/12 bg-[#262019] p-4">
             <p className="text-[13px] text-white/70">Что написать</p>
 
             <input
@@ -1080,7 +1080,7 @@ export function DrawingEditor({
               <button
                 type="button"
                 onClick={addText}
-                className="min-h-11 flex-1 rounded-2xl bg-white text-[15px] font-semibold text-[#0b0810]"
+                className="min-h-11 flex-1 rounded-2xl bg-white text-[15px] font-semibold text-[#171210]"
               >
                 Поставить
               </button>
@@ -1127,7 +1127,7 @@ function Tool({
         disabled
           ? "text-white/20"
           : active
-            ? "bg-white text-[#0b0810]"
+            ? "bg-white text-[#171210]"
             : "bg-white/8 text-white/75",
       )}
     >

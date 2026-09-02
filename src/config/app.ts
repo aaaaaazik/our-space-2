@@ -5,31 +5,31 @@
  */
 export const appConfig = {
   /** Полное название — заголовок вкладки и имя в манифесте. */
-  name: "A & H",
+  name: "S & A",
 
   /**
    * Короткое название — именно оно подписывается под иконкой
    * на домашнем экране iPhone. Больше 12 символов iOS обрежет.
    */
-  shortName: "A & H",
+  shortName: "S & A",
 
   description: "Наш маленький мир, доступный только нам двоим",
 
   /** Имена — показываются на экране входа. */
-  partners: ["Azamat", "Hilola"] as const,
+  partners: ["Sarvinoz", "Aziz"] as const,
 
   /** Цвет системной панели браузера и фона splash-экрана при запуске PWA. */
   themeColor: {
-    light: "#faf7fd",
-    dark: "#150f20",
+    light: "#faf5ee",
+    dark: "#1b1512",
   },
 
   /** Резервная дата начала отношений — пока настройки пары не заполнены. */
   fallbackRelationshipStart: "2024-08-20T00:00:00Z",
 
   /** Часовой пояс по умолчанию — меняется в настройках. */
-  defaultTimezone: "Europe/Moscow",
+  defaultTimezone: "Asia/Tashkent",
 } as const;
 
-/** «Azamat & Hilola» — для мест, где нужны оба имени подряд. */
+/** «Sarvinoz & Aziz» — для мест, где нужны оба имени подряд. */
 export const coupleLabel = appConfig.partners.join(" & ");

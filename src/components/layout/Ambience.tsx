@@ -1,5 +1,5 @@
 /**
- * Фоновая атмосфера: мягкие световые пятна на тёмной основе.
+ * Фоновая атмосфера: мягкие тёплые пятна — пудра, карамель, песок.
  *
  * Слой намеренно неподвижен и намеренно один.
  *
@@ -22,13 +22,16 @@ export function Ambience() {
       aria-hidden
       className="ambience pointer-events-none fixed inset-0 -z-10"
       style={{
+        // Сами цвета живут в globals.css переменными --glow-*: в светлой
+        // теме это пудра по кремовому, в тёмной — те же оттенки, но глубже
+        // и тише. Здесь только расстановка пятен, одинаковая для обеих.
         backgroundImage: [
-          // Сверху — сиреневое свечение, самое заметное
-          "radial-gradient(circle 68vw at 50% 7%, rgba(168,110,232,0.55) 0%, rgba(168,110,232,0.30) 30%, rgba(168,110,232,0.10) 55%, transparent 75%)",
-          // Слева ниже — розовое, чтобы фиолетовый не уходил в холод
-          "radial-gradient(circle 50vw at 20% 49%, rgba(238,132,182,0.45) 0%, rgba(238,132,182,0.24) 32%, rgba(238,132,182,0.08) 58%, transparent 76%)",
-          // Справа внизу — чтобы низ экрана не проваливался в темноту
-          "radial-gradient(circle 46vw at 86% 79%, rgba(140,110,240,0.40) 0%, rgba(140,110,240,0.16) 40%, transparent 72%)",
+          // Сверху — румяное свечение, самое заметное
+          "radial-gradient(circle 68vw at 50% 6%, rgb(var(--glow-1) / var(--glow-a)) 0%, rgb(var(--glow-1) / calc(var(--glow-a) * 0.55)) 30%, rgb(var(--glow-1) / calc(var(--glow-a) * 0.18)) 55%, transparent 75%)",
+          // Слева ниже — тёплая карамель, чтобы беж не ушёл в серость
+          "radial-gradient(circle 52vw at 18% 46%, rgb(var(--glow-2) / var(--glow-b)) 0%, rgb(var(--glow-2) / calc(var(--glow-b) * 0.5)) 32%, rgb(var(--glow-2) / calc(var(--glow-b) * 0.16)) 58%, transparent 76%)",
+          // Справа внизу — песок, чтобы низ экрана не проваливался
+          "radial-gradient(circle 48vw at 86% 80%, rgb(var(--glow-3) / var(--glow-c)) 0%, rgb(var(--glow-3) / calc(var(--glow-c) * 0.4)) 40%, transparent 72%)",
         ].join(", "),
       }}
     />

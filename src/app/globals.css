@@ -1,0 +1,338 @@
+@import "tailwindcss";
+
+/*
+  Дизайн-система приложения.
+  Все цвета заданы переменными, поэтому светлая и тёмная темы отличаются
+  только значениями, а не отдельными наборами классов.
+*/
+
+:root {
+  color-scheme: light;
+
+  /* Фон страницы и «бумага» карточек */
+  --bg: #faf7fd;
+  --surface: #ffffff;
+  --surface-2: #f3edfa;
+
+  /* Текст */
+  --text: #1d1726;
+  --text-muted: #6b6180;
+  --text-faint: #a196b5;
+
+  /* Линии и разделители */
+  --border: #e8e0f2;
+  --border-strong: #d6cce6;
+
+  /* Два акцента: сиреневый ведущий и розовый в пару к нему.
+     Второй нужен для переливов — одним цветом градиент не сделать. */
+  --accent: #8b5cc7;
+  --accent-2: #d9709f;
+  --accent-hover: #7a4bb5;
+  --accent-soft: #f3e9fb;
+  --on-accent: #ffffff;
+
+  /* Служебные */
+  --danger: #c4426a;
+  --success: #4a8a6a;
+
+  --shadow-card: 0 1px 2px rgb(25 23 20 / 0.04), 0 4px 16px rgb(25 23 20 / 0.04);
+  --shadow-sheet: 0 -8px 40px rgb(25 23 20 / 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    /* Фиолетовая основа. Заметно светлее прежней почти-чёрной: на ней
+       и свечения, и карточки читаются как цвет, а не как серость. */
+    --bg: #150f20;
+    --surface: #211a30;
+    --surface-2: #2c2440;
+
+    --text: #f3eefa;
+    --text-muted: #ab9fc4;
+    --text-faint: #786c92;
+
+    --border: #362c4c;
+    --border-strong: #483c62;
+
+    --accent: #bd8bee;
+    --accent-2: #f4a3ca;
+    --accent-hover: #cb9df5;
+    --accent-soft: #2f2447;
+    --on-accent: #1c1128;
+
+    --danger: #f08ab0;
+    --success: #86d6ae;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.24);
+    --shadow-sheet: 0 -8px 40px rgb(0 0 0 / 0.5);
+  }
+}
+
+/*
+  Ручное переключение темы из настроек: атрибут на <html> побеждает
+  системную настройку в обе стороны.
+*/
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #faf7fd;
+  --surface: #ffffff;
+  --surface-2: #f3edfa;
+  --text: #1d1726;
+  --text-muted: #6b6180;
+  --text-faint: #a196b5;
+  --border: #e8e0f2;
+  --border-strong: #d6cce6;
+  --accent: #8b5cc7;
+  --accent-2: #d9709f;
+  --accent-hover: #7a4bb5;
+  --accent-soft: #f3e9fb;
+  --on-accent: #ffffff;
+  --danger: #c4426a;
+  --success: #4a8a6a;
+  --shadow-card: 0 1px 2px rgb(25 23 20 / 0.04), 0 4px 16px rgb(25 23 20 / 0.04);
+  --shadow-sheet: 0 -8px 40px rgb(25 23 20 / 0.16);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #150f20;
+  --surface: #211a30;
+  --surface-2: #2c2440;
+  --text: #f3eefa;
+  --text-muted: #ab9fc4;
+  --text-faint: #786c92;
+  --border: #362c4c;
+  --border-strong: #483c62;
+  --accent: #bd8bee;
+  --accent-2: #f4a3ca;
+  --accent-hover: #cb9df5;
+  --accent-soft: #2f2447;
+  --on-accent: #1c1128;
+  --danger: #f08ab0;
+  --success: #86d6ae;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.24);
+  --shadow-sheet: 0 -8px 40px rgb(0 0 0 / 0.5);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-lora), ui-serif, Georgia, serif;
+  --font-hand: var(--font-caveat), "Segoe Script", cursive;
+
+  --shadow-card: var(--shadow-card);
+  --shadow-sheet: var(--shadow-sheet);
+}
+
+/* Безопасные зоны iPhone — вырез сверху и полоса жестов снизу. */
+@theme inline {
+  --spacing-safe-top: env(safe-area-inset-top, 0px);
+  --spacing-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  /* Запрещаем Safari увеличивать шрифт при повороте экрана */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  /* Убираем «резинку» всей страницы — характерный признак сайта, а не приложения */
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Убираем синюю вспышку при тапе на iOS */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Скрываем полосы прокрутки у горизонтальных лент, оставляя саму прокрутку */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Цифры одинаковой ширины — счётчик не «дёргается» при смене секунд */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+  Бумага письма.
+
+  Цвета заданы прямо здесь, а не переменными темы: лист должен оставаться
+  тёплым и бежевым независимо от того, светлая тема у человека или тёмная.
+  В этом и смысл — вокруг темнота, а письмо на ощупь бумажное.
+*/
+.paper {
+  --paper: #f4ead8;
+  --paper-edge: #e6d8c0;
+  --ink: #3a2f26;
+  --ink-soft: #7a6a58;
+
+  background-color: var(--paper);
+  color: var(--ink);
+  background-image:
+    /* мягкое затемнение к краям — будто лист лежит и слегка загибается */
+    radial-gradient(
+      120% 90% at 50% 0%,
+      rgba(255, 255, 255, 0.5) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      100% 100% at 50% 100%,
+      rgba(140, 115, 85, 0.14) 0%,
+      transparent 60%
+    ),
+    /* зерно: генерируется браузером, отдельная картинка не нужна */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 24px 60px -12px rgba(0, 0, 0, 0.55),
+    0 8px 20px -8px rgba(0, 0, 0, 0.4);
+}
+
+.paper-muted {
+  color: var(--ink-soft);
+}
+
+/*
+  Курсор письма. Мигание сделано обычной анимацией CSS, а не через
+  библиотеку: такую браузер отдаёт видеокарте и считает без участия
+  основного потока, поэтому она не отнимает кадры у самого перехода.
+*/
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.caret {
+  animation: caret-blink 1s ease-in-out infinite;
+}
+
+/* Тонкая линия-разделитель в тон бумаге */
+.paper-rule {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--paper-edge) 20%,
+    var(--paper-edge) 80%,
+    transparent
+  );
+}
+
+/*
+  Плавающие световые пятна на фоне.
+
+  Движение намеренно очень медленное — 20 и более секунд на круг.
+  Быстрая анимация фона выглядит дёшево и отвлекает от содержимого,
+  а такая только создаёт ощущение, что экран «дышит».
+*/
+/*
+  Фон неподвижен намеренно — почему именно, подробно расписано
+  в Ambience.tsx. Коротко: движущееся пятно шире экрана телефон
+  перерисовывает целиком на каждом кадре, и памяти под это не хватает.
+
+  contain: paint отрезает слой от остальной страницы: что бы ни менялось
+  снаружи — тикающий счётчик, подгрузка списка — фон не перерисовывается.
+  translateZ(0) оставляет его отдельной картинкой в видеокарте, готовой
+  один раз навсегда.
+*/
+.ambience {
+  contain: paint;
+  transform: translateZ(0);
+}
+
+/*
+  Наклейки чуть покачиваются. Восемь секунд на круг — движение почти
+  незаметно и не тянет взгляд на себя.
+*/
+@keyframes sticker-float {
+  0%,
+  100% {
+    transform: rotate(var(--tilt)) translateY(0);
+  }
+  50% {
+    transform: rotate(calc(var(--tilt) + 4deg)) translateY(-7px);
+  }
+}
+
+.sticker {
+  transform: rotate(var(--tilt));
+  animation: sticker-float 8s ease-in-out infinite;
+}
+
+/*
+  Лёгкое покачивание карточек и фотографий.
+
+  Движется только transform — его считает видеокарта отдельно от основного
+  потока, поэтому даже полсотни плиток на экране не отнимают кадры.
+  Менять здесь на что-то вроде top или margin нельзя: это заставит браузер
+  пересчитывать раскладку страницы на каждом кадре.
+
+  will-change здесь намеренно НЕ стоит. Он выносит элемент на отдельный слой
+  видеокарты, и на одной-двух карточках это помогает — но в сетке фотографий
+  таких элементов полсотни, память кончается и всё начинает дёргаться именно
+  из-за него. Анимация transform и без подсказок считается на видеокарте.
+*/
+@keyframes gentle-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(calc(var(--spin, 1.6deg) * -1));
+  }
+  50% {
+    transform: translate3d(0, -6px, 0) rotate(var(--spin, 1.6deg));
+  }
+}
+
+.gentle-float {
+  animation: gentle-float 7s ease-in-out infinite;
+}
+
+
+/*
+  Пока открыто письмо, покачивание не видно, но продолжает отнимать кадры.
+  Атрибут ставит просмотрщик письма.
+*/
+:root[data-letter-open] .sticker,
+:root[data-letter-open] .gentle-float {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

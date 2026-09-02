@@ -96,6 +96,48 @@ export type Caption = {
 
 export type Item = Stroke | Stamp | Caption;
 
+/** Шрифт надписи. Один и тот же и при отрисовке, и при измерении. */
+function captionFont(size: number): string {
+  return `600 ${size}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+}
+
+/**
+ * Холст только для замеров.
+ *
+ * Ширину надписи иначе не узнать: она зависит от шрифта, а не от числа
+ * букв. Один холст на всё приложение — создавать его на каждый замер
+ * было бы расточительно.
+ */
+let measurer: CanvasRenderingContext2D | null = null;
+
+/**
+ * Рамка надписи в единицах листа.
+ *
+ * Надпись рисуется от центра, поэтому и рамка считается от него же:
+ * так её можно и подсветить, и поймать касанием.
+ */
+export function captionBox(item: Caption): {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+} {
+  if (!measurer && typeof document !== "undefined") {
+    measurer = document.createElement("canvas").getContext("2d");
+  }
+
+  let w = item.size * item.text.length * 0.6;
+
+  if (measurer) {
+    measurer.font = captionFont(item.size);
+    w = measurer.measureText(item.text).width;
+  }
+
+  const h = item.size * 1.25;
+
+  return { x: item.x - w / 2, y: item.y - h / 2, w, h };
+}
+
 /** Готовые цвета. Свой оттенок выбирается отдельно, системной палитрой. */
 export const COLORS = [
   "#111827", "#4b5563", "#9ca3af", "#ffffff",
@@ -263,7 +305,7 @@ export function paintItems(
 
     ctx.save();
     ctx.fillStyle = item.color;
-    ctx.font = `600 ${item.size}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+    ctx.font = captionFont(item.size);
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(item.text, item.x, item.y);

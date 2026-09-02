@@ -139,13 +139,25 @@ export function Lightbox({
                 <Unavailable />
               )
             ) : item.url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={item.url}
-                alt={item.title ?? "Фотография"}
-                draggable={false}
-                className="max-h-full max-w-full rounded-3xl object-contain select-none"
-              />
+              /*
+                Паспарту вокруг снимка.
+
+                Фотография лежит на светлом поле с тонкой золотистой
+                каймой — как карточка в альбоме. Поле само подгоняется
+                под снимок: max-w-fit прижимает рамку к картинке, иначе
+                у вертикальных фотографий оставались бы пустые борта.
+              */
+              <div className="max-h-full max-w-fit rounded-[26px] bg-[#f7f2ea] p-2.5 shadow-[0_18px_50px_rgba(0,0,0,0.55)] ring-1 ring-[#d9c9a8]">
+                <div className="overflow-hidden rounded-[18px] ring-1 ring-black/10">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.url}
+                    alt={item.title ?? "Фотография"}
+                    draggable={false}
+                    className="max-h-[78dvh] max-w-full object-contain select-none"
+                  />
+                </div>
+              </div>
             ) : (
               <Unavailable />
             )}

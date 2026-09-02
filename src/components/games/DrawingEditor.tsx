@@ -21,13 +21,14 @@ import {
   GLYPHS,
   PAPERS,
   SIZES,
+  captionBox,
   defaultInk,
   paintItems,
   paintPaper,
   paperSize,
+  type Caption,
   type Item,
   type Paper,
-  type Stroke,
   type Tool,
 } from "@/lib/games/artboard";
 import { cn } from "@/lib/utils/cn";
@@ -86,13 +87,33 @@ export function DrawingEditor({
   } | null>(null);
   const frameRef = useRef(0);
 
+  /** Выбранная надпись: её можно двигать и менять ей размер. */
+  const selectedRef = useRef<number | null>(null);
+  const dragRef = useRef<
+    | { type: "move"; index: number; dx: number; dy: number }
+    | { type: "resize"; index: number; size: number; dist: number }
+    | null
+  >(null);
+
   const [mode, setMode] = useState<Mode>("pen");
   const [color, setColor] = useState<string>(defaultInk(paper));
   const [width, setWidth] = useState<number>(SIZES[2]);
   const [glyph, setGlyph] = useState<string>(GLYPHS[0]);
   const [panel, setPanel] = useState<Panel>("none");
   const [zoomed, setZoomed] = useState(false);
-  const [typing, setTyping] = useState<{ x: number; y: number } | null>(null);
+  /**
+   * Куда встанет надпись.
+   *
+   * При правке сюда кладём ещё размер и цвет прежней: иначе переписанная
+   * надпись возвращалась бы к размеру по умолчанию и теряла всё, что ей
+   * успели задать руками.
+   */
+  const [typing, setTyping] = useState<{
+    x: number;
+    y: number;
+    size?: number;
+    color?: string;
+  } | null>(null);
   const [draft, setDraft] = useState("");
 
   /*
@@ -107,6 +128,7 @@ export function DrawingEditor({
     canRedo: false,
     hasItems: items.length > 0,
     unit: 0.36,
+    selected: false,
   });
 
   function sync() {
@@ -115,7 +137,47 @@ export function DrawingEditor({
       canRedo: futureRef.current.length > 0,
       hasItems: itemsRef.current.length > 0,
       unit: fitScale(),
+      selected: selectedRef.current !== null,
     });
+  }
+
+  /** Сколько единиц листа приходится на одну точку экрана. */
+  function perPixel(): number {
+    return 1 / (viewRef.current.scale || 1);
+  }
+
+  /** Ручка изменения размера — в правом нижнем углу рамки. */
+  function handleAt(item: Caption) {
+    const box = captionBox(item);
+    return { x: box.x + box.w, y: box.y + box.h, r: 16 * perPixel() };
+  }
+
+  /** Какая надпись под точкой. Ищем с конца: сверху лежит последняя. */
+  function captionAt(x: number, y: number): number | null {
+    for (let i = itemsRef.current.length - 1; i >= 0; i--) {
+      const item = itemsRef.current[i];
+      if (item.kind !== "text") continue;
+
+      const box = captionBox(item);
+      // Небольшой запас, чтобы попадать пальцем, а не пикселем.
+      const pad = 10 * perPixel();
+
+      if (
+        x >= box.x - pad &&
+        x <= box.x + box.w + pad &&
+        y >= box.y - pad &&
+        y <= box.y + box.h + pad
+      ) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  function select(index: number | null) {
+    selectedRef.current = index;
+    sync();
+    repaint();
   }
 
   /** Насколько лист помещается в окно целиком — по обеим сторонам сразу. */
@@ -216,6 +278,33 @@ export function DrawingEditor({
 
     paintPaper(ctx, paperRef.current);
     paintItems(ctx, itemsRef.current, paperRef.current);
+
+    // Рамка выбранной надписи. Рисуется здесь, а не в paintItems: это
+    // обвязка редактора, и в готовую картинку она попасть не должна.
+    const chosen = selectedRef.current;
+    const item = chosen === null ? null : itemsRef.current[chosen];
+
+    if (item && item.kind === "text") {
+      const box = captionBox(item);
+      const px = 1 / view.scale;
+
+      ctx.save();
+      ctx.strokeStyle = "#7c3aed";
+      ctx.lineWidth = 2 * px;
+      ctx.setLineDash([8 * px, 6 * px]);
+      ctx.strokeRect(box.x, box.y, box.w, box.h);
+
+      const handle = handleAt(item);
+      ctx.setLineDash([]);
+      ctx.fillStyle = "#7c3aed";
+      ctx.beginPath();
+      ctx.arc(handle.x, handle.y, 9 * px, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2.5 * px;
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 
   /** Просит перерисовать не чаще одного раза за кадр. */
@@ -312,6 +401,48 @@ export function DrawingEditor({
       const at = toArt(event.clientX, event.clientY);
 
       if (mode === "text") {
+        const chosen = selectedRef.current;
+        const current = chosen === null ? null : itemsRef.current[chosen];
+
+        // Сначала ручка размера: она лежит за краем рамки, и проверять
+        // её надо раньше самой надписи.
+        if (current && current.kind === "text") {
+          const handle = handleAt(current);
+          if (Math.hypot(at.x - handle.x, at.y - handle.y) <= handle.r) {
+            remember();
+            dragRef.current = {
+              type: "resize",
+              index: chosen!,
+              size: current.size,
+              dist:
+                Math.hypot(at.x - current.x, at.y - current.y) || 1,
+            };
+            return;
+          }
+        }
+
+        const hit = captionAt(at.x, at.y);
+
+        if (hit !== null) {
+          const target = itemsRef.current[hit] as Caption;
+          remember();
+          select(hit);
+          dragRef.current = {
+            type: "move",
+            index: hit,
+            // Держим смещение от середины, иначе надпись прыгала бы
+            // под палец при первом же касании.
+            dx: at.x - target.x,
+            dy: at.y - target.y,
+          };
+          return;
+        }
+
+        if (selectedRef.current !== null) {
+          select(null);
+          return;
+        }
+
         setTyping(at);
         setDraft("");
         return;
@@ -418,6 +549,30 @@ export function DrawingEditor({
       return;
     }
 
+    const drag = dragRef.current;
+
+    if (drag) {
+      const at = toArt(event.clientX, event.clientY);
+      const item = itemsRef.current[drag.index];
+      if (item?.kind !== "text") return;
+
+      const next = [...itemsRef.current];
+
+      if (drag.type === "move") {
+        next[drag.index] = { ...item, x: at.x - drag.dx, y: at.y - drag.dy };
+      } else {
+        const dist = Math.hypot(at.x - item.x, at.y - item.y) || 1;
+        next[drag.index] = {
+          ...item,
+          size: Math.min(400, Math.max(18, (drag.size * dist) / drag.dist)),
+        };
+      }
+
+      itemsRef.current = next;
+      repaint();
+      return;
+    }
+
     if (!drawingRef.current) return;
 
     const stroke = itemsRef.current.at(-1);
@@ -444,6 +599,12 @@ export function DrawingEditor({
     pointersRef.current.delete(event.pointerId);
     if (pointersRef.current.size < 2) pinchRef.current = null;
 
+    if (pointersRef.current.size === 0 && dragRef.current) {
+      dragRef.current = null;
+      commit();
+      return;
+    }
+
     if (pointersRef.current.size === 0 && drawingRef.current) {
       drawingRef.current = false;
       commit();
@@ -456,6 +617,7 @@ export function DrawingEditor({
 
     futureRef.current.push(itemsRef.current);
     itemsRef.current = previous;
+    selectedRef.current = null;
     commit();
     repaint();
   }
@@ -466,6 +628,7 @@ export function DrawingEditor({
 
     historyRef.current.push(itemsRef.current);
     itemsRef.current = next;
+    selectedRef.current = null;
     commit();
     repaint();
   }
@@ -474,6 +637,7 @@ export function DrawingEditor({
     if (itemsRef.current.length === 0) return;
     remember();
     itemsRef.current = [];
+    selectedRef.current = null;
     commit();
     repaint();
   }
@@ -503,16 +667,55 @@ export function DrawingEditor({
       {
         kind: "text",
         text: draft.trim(),
-        color,
-        size: width * 4,
+        color: typing.color ?? color,
+        size: typing.size ?? width * 4,
         x: typing.x,
         y: typing.y,
       },
     ];
+    selectedRef.current = itemsRef.current.length - 1;
     setTyping(null);
     setDraft("");
     commit();
     repaint();
+  }
+
+  /** Убрать выбранную надпись. */
+  function dropCaption() {
+    const chosen = selectedRef.current;
+    if (chosen === null) return;
+
+    remember();
+    itemsRef.current = itemsRef.current.filter((_, i) => i !== chosen);
+    selectedRef.current = null;
+    commit();
+    repaint();
+  }
+
+  /** Переписать выбранную надпись, не ставя её заново. */
+  function editCaption() {
+    const chosen = selectedRef.current;
+    const item = chosen === null ? null : itemsRef.current[chosen];
+    if (!item || item.kind !== "text") return;
+
+    setDraft(item.text);
+    setTyping({ x: item.x, y: item.y, size: item.size, color: item.color });
+    // Старую убираем: новая встанет на то же место тем же текстом.
+    remember();
+    itemsRef.current = itemsRef.current.filter((_, i) => i !== chosen);
+    selectedRef.current = null;
+    commit();
+    repaint();
+  }
+
+  function pickMode(next: Mode) {
+    // Рамка нужна только в режиме текста — в остальных она сбивает с толку.
+    if (next !== "text" && selectedRef.current !== null) {
+      selectedRef.current = null;
+      sync();
+      repaint();
+    }
+    setMode(next);
   }
 
   const brushing = mode !== "stamp" && mode !== "text";
@@ -647,7 +850,7 @@ export function DrawingEditor({
                     aria-label={`Штамп ${value}`}
                     onClick={() => {
                       setGlyph(value);
-                      setMode("stamp");
+                      pickMode("stamp");
                     }}
                     className={cn(
                       "flex aspect-square items-center justify-center rounded-lg border text-[19px]",
@@ -719,13 +922,52 @@ export function DrawingEditor({
         </div>
       )}
 
+      {/*
+        Панель выбранной надписи.
+
+        Появляется только когда надпись выбрана: тащить её можно прямо
+        пальцем, менять размер — за кружок в углу рамки, а вот переписать
+        и убрать иначе было бы нечем.
+      */}
+      {ui.selected && (
+        <div className="shrink-0 px-3 pb-2">
+          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.07] p-2 backdrop-blur-xl">
+            <span className="pl-1.5 text-[12px] leading-snug text-white/55">
+              Тяните надпись, за кружок — размер
+            </span>
+
+            <button
+              type="button"
+              onClick={editCaption}
+              className="ml-auto min-h-9 shrink-0 rounded-xl bg-white/10 px-3 text-[13px] text-white/85"
+            >
+              Переписать
+            </button>
+            <button
+              type="button"
+              onClick={dropCaption}
+              className="min-h-9 shrink-0 rounded-xl bg-white/10 px-3 text-[13px] text-danger"
+            >
+              Убрать
+            </button>
+            <button
+              type="button"
+              onClick={() => select(null)}
+              className="min-h-9 shrink-0 rounded-xl bg-white px-3 text-[13px] font-semibold text-[#0b0810]"
+            >
+              Готово
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Кисти */}
       <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto px-3 pb-1.5">
         {BRUSHES.map((brush) => (
           <Tool
             key={brush.id}
             onClick={() => {
-              setMode(brush.id);
+              pickMode(brush.id);
               setPanel("none");
             }}
             active={mode === brush.id}
@@ -742,7 +984,7 @@ export function DrawingEditor({
 
         <Tool
           onClick={() => {
-            setMode("stamp");
+            pickMode("stamp");
             setPanel(panel === "stamps" ? "none" : "stamps");
           }}
           active={mode === "stamp"}
@@ -753,7 +995,7 @@ export function DrawingEditor({
 
         <Tool
           onClick={() => {
-            setMode("text");
+            pickMode("text");
             setPanel("none");
           }}
           active={mode === "text"}
@@ -764,7 +1006,7 @@ export function DrawingEditor({
 
         <Tool
           onClick={() => {
-            setMode("eraser");
+            pickMode("eraser");
             setPanel("none");
           }}
           active={mode === "eraser"}
